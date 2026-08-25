@@ -1,0 +1,82 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Diagnóstico {{ diagnostic.diagnostic_token[:8] }} - Admin{% endblock %}
+{% block page_title %}Diagnóstico {{ diagnostic.diagnostic_token[:12] }}{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
+    <div class="table-container">
+        <div class="table-header">
+            <span class="table-title">Datos del condominio</span>
+        </div>
+        <table>
+            <tr><th style="width: 180px;">Token</th><td>{{ diagnostic.diagnostic_token }}</td></tr>
+            <tr><th>Condominio</th><td>{{ diagnostic.condominium_name }}</td></tr>
+            <tr><th>Dirección</th><td>{{ diagnostic.address or '-' }}</td></tr>
+            <tr><th>Antigüedad</th><td>{{ (diagnostic.building_age ~ ' años') if diagnostic.building_age else '-' }}</td></tr>
+            <tr><th>Unidades</th><td>{{ diagnostic.units_count or '-' }}</td></tr>
+            <tr><th>Construcción</th><td>{{ diagnostic.construction_type or '-' }}</td></tr>
+            <tr><th>Creado</th><td>{{ diagnostic.created_at|format_date }}</td></tr>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <span class="table-title">Contacto y resultado</span>
+        </div>
+        <table>
+            <tr><th style="width: 180px;">Cliente</th><td>{{ diagnostic.client_name or '-' }}</td></tr>
+            <tr><th>Email</th><td>{{ diagnostic.client_email or '-' }}</td></tr>
+            <tr><th>Teléfono</th><td>{{ diagnostic.client_phone or '-' }}</td></tr>
+            <tr><th>Preferencia</th><td>{{ {'email': 'Email', 'phone': 'Teléfono', 'whatsapp': 'WhatsApp'}.get(diagnostic.contact_preference, diagnostic.contact_preference) }}</td></tr>
+            <tr>
+                <th>Urgencia</th>
+                <td>{{ diagnostic.urgency_label }} ({{ diagnostic.urgency_score }}/10)</td>
+            </tr>
+            <tr>
+                <th>Servicio recomendado</th>
+                <td>
+                    {% if diagnostic.recommended_service %}
+                    {{ diagnostic.recommended_service.name }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>{{ {'draft': 'Borrador', 'pending': 'Pendiente', 'reviewed': 'Revisado', 'contacted': 'Contactado'}.get(diagnostic.status, diagnostic.status) }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="table-container" style="margin-top: 1.5rem;">
+    <div class="table-header">
+        <span class="table-title">Problemas reportados</span>
+    </div>
+    {% if diagnostic.issues %}
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        {% set labels = {'fugas_agua': 'Fugas de agua', 'problemas_electricos': 'Problemas eléctricos', 'estructural': 'Estructural', 'ascensor': 'Ascensor', 'humedad': 'Humedad', 'jardineria': 'Jardinería', 'seguridad': 'Seguridad', 'saneamiento': 'Saneamiento', 'cosmetico': 'Cosmético'} %}
+        {% for issue in diagnostic.issues %}
+        <span class="badge badge-primary">{{ labels.get(issue if issue is string else issue.get('type', ''), issue if issue is string else '') }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color: #6b7280;">Sin problemas registrados.</p>
+    {% endif %}
+
+    <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="{{ url_for('admin.list_diagnostics') }}" class="btn-outline">Volver</a>
+        {% if diagnostic.contact_preference == 'whatsapp' and diagnostic.client_phone %}
+        <a href="https://wa.me/{{ diagnostic.client_phone | replace('+', '') | replace(' ', '') }}"
+           target="_blank" rel="noopener" class="btn-primary"><i class="fab fa-whatsapp"></i> Escribir por WhatsApp</a>
+        {% elif diagnostic.client_email %}
+        <a href="mailto:{{ diagnostic.client_email }}" class="btn-primary"><i class="fas fa-envelope"></i> Contactar por email</a>
+        {% endif %}
+        {% if diagnostic.client_phone %}
+        <a href="tel:{{ diagnostic.client_phone }}" class="btn-outline"><i class="fas fa-phone"></i> Llamar</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

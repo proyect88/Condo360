@@ -1,0 +1,40 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Nuevo Usuario - Admin{% endblock %}
+{% block page_title %}Nuevo Usuario{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('admin.create_user') }}" class="admin-form">
+    {{ form.hidden_tag() }}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-group">
+            {{ form.full_name.label }} {{ form.full_name(class="form-control") }}
+            {% for error in form.full_name.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.email.label }} {{ form.email(class="form-control") }}
+            {% for error in form.email.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form.password.label }} {{ form.password(class="form-control", autocomplete="new-password") }}
+        <span class="form-text">Mínimo 8 caracteres. Se recomienda combinar mayúsculas, minúsculas, números y símbolos.</span>
+        {% for error in form.password.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+    </div>
+
+    <div class="form-group">
+        {{ form.role.label }} {{ form.role(class="form-control") }}
+    </div>
+
+    <div class="form-group form-check">
+        {{ form.is_active() }} {{ form.is_active.label }}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Crear usuario</button>
+        <a href="{{ url_for('admin.list_users') }}" class="btn-outline">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

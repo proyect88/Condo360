@@ -1,0 +1,43 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Usuarios - Admin{% endblock %}
+{% block page_title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div class="table-header">
+        <span class="table-title">Listado de usuarios</span>
+        <a href="{{ url_for('admin.create_user') }}" class="btn-primary btn-sm">
+            <i class="fas fa-user-plus"></i> Nuevo usuario
+        </a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Último acceso</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><strong>{{ user.full_name }}</strong></td>
+                <td>{{ user.email }}</td>
+                <td><span class="badge {{ 'badge-danger' if user.role == 'admin' else 'badge-primary' if user.role == 'staff' else 'badge-info' }}">{{ user.role }}</span></td>
+                <td>
+                    {% if user.is_active %}
+                    <span class="badge badge-success">Activo</span>
+                    {% else %}
+                    <span class="badge badge-secondary">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td>{{ user.last_login|format_date if user.last_login else '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

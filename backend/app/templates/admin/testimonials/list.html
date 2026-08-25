@@ -1,0 +1,71 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Testimonios - Admin{% endblock %}
+{% block page_title %}Gestión de Testimonios{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div class="table-header">
+        <span class="table-title">Listado de testimonios</span>
+        <a href="{{ url_for('admin.create_testimonial') }}" class="btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Nuevo testimonio
+        </a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Condominio</th>
+                <th>Calificación</th>
+                <th>Servicio</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for testimonial in testimonials %}
+            <tr>
+                <td><strong>{{ testimonial.client_name }}</strong><br><small style="color:#6b7280;">{{ testimonial.client_position or '' }}</small></td>
+                <td>{{ testimonial.condominium_name or '-' }}</td>
+                <td style="white-space: nowrap;">{{ testimonial.rating_stars }}</td>
+                <td>{{ testimonial.service_name or (testimonial.service.name if testimonial.service else '-') }}</td>
+                <td>
+                    {% if testimonial.is_approved %}
+                    <span class="badge badge-success">Aprobado</span>
+                    {% else %}
+                    <span class="badge badge-warning">Pendiente</span>
+                    {% endif %}
+                    {% if testimonial.is_featured %}<span class="badge badge-info">Destacado</span>{% endif %}
+                </td>
+                <td>{{ testimonial.created_at|format_date }}</td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        {% if not testimonial.is_approved %}
+                        <form method="POST" action="{{ url_for('admin.approve_testimonial', id=testimonial.id) }}"
+                              data-confirm="¿Aprobar este testimonio?">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-success btn-sm" title="Aprobar">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                        <form method="POST" action="{{ url_for('admin.delete_testimonial', id=testimonial.id) }}"
+                              data-confirm="¿Eliminar este testimonio?">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-danger btn-sm" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #6b7280;">No hay testimonios aún</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

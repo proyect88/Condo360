@@ -1,0 +1,61 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Tickets - Admin{% endblock %}
+{% block page_title %}Gestión de Tickets{% endblock %}
+
+{% block content %}
+<!-- Filtros -->
+<div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+    <a href="{{ url_for('admin.list_tickets') }}" class="btn-outline btn-sm {{ '' if not current_status and not current_urgency else '' }}"
+       style="{{ 'background: var(--admin-primary); color: white;' if not current_status and not current_urgency else '' }}">Todos</a>
+    {% for status in statuses %}
+    <a href="?status={{ status }}" class="btn-outline btn-sm"
+       style="{{ 'background: var(--admin-primary); color: white;' if current_status == status else '' }}">
+        {{ {'new': 'Nuevos', 'in_progress': 'En progreso', 'resolved': 'Resueltos', 'closed': 'Cerrados', 'cancelled': 'Cancelados'}[status] }}
+    </a>
+    {% endfor %}
+    <span style="width: 1px; background: #e5e7eb;"></span>
+    {% for urgency in urgencies %}
+    <a href="?urgency={{ urgency }}{% if current_status %}&status={{ current_status }}{% endif %}" class="btn-outline btn-sm"
+       style="{{ 'background: var(--admin-primary); color: white;' if current_urgency == urgency else '' }}">
+        {{ {'low': 'Baja', 'medium': 'Media', 'high': 'Alta', 'critical': 'Crítica'}[urgency] }}
+    </a>
+    {% endfor %}
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <span class="table-title">{{ tickets|length }} ticket(s)</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Cliente</th>
+                <th>Condominio</th>
+                <th>Servicio</th>
+                <th>Urgencia</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td><a href="{{ url_for('admin.view_ticket', id=ticket.id) }}"><strong>{{ ticket.ticket_number }}</strong></a></td>
+                <td>{{ ticket.client_name }}</td>
+                <td>{{ ticket.condominium_name or '-' }}</td>
+                <td>{{ ticket.service_type }}</td>
+                <td><span class="badge badge-{{ ticket.urgency_color }}">{{ ticket.urgency_label }}</span></td>
+                <td><span class="badge badge-{{ ticket.status_color }}">{{ ticket.status_label }}</span></td>
+                <td>{{ ticket.created_at|format_date }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #6b7280;">No hay tickets con estos filtros</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

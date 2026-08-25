@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}Diagnóstico Gratuito - Condo Services 360{% endblock %}
+{% block description %}Diagnóstico interactivo gratuito para conocer las necesidades de mantenimiento de tu condominio o departamento.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+        <div class="container">
+        <h1>Diagnóstico <span class="highlight">Gratuito</span></h1>
+        <p>Responde unas breves preguntas y obtén un plan preliminar para tu condominio o departamento</p>
+    </div>
+    </section>
+
+<section style="padding: var(--spacing-md) 0 var(--spacing-xl); background: var(--white);">
+    <div class="container">
+        <div class="contacto-layout">
+
+            <!-- Datos de contacto (mismo bloque visual que /contacto) -->
+            <aside class="contacto-info">
+                <h2>Datos de contacto</h2>
+                <p class="contacto-info-sub">Atendemos condominios completos y departamentos individuales.</p>
+
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-phone"></i></span>
+                    <div>
+                        <strong>Teléfono</strong>
+                        <span>+56 9 1234 5678</span>
+                    </div>
+                </div>
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-envelope"></i></span>
+                    <div>
+                        <strong>Email</strong>
+                        <span>info@condoservices360.cl</span>
+                    </div>
+                </div>
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <div>
+                        <strong>Ubicación</strong>
+                        <span>Santiago, Chile</span>
+                    </div>
+                </div>
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-clock"></i></span>
+                    <div>
+                        <strong>Horario</strong>
+                        <span>Lun - Vie: 8:00 - 18:00</span>
+                    </div>
+                </div>
+                <div class="contacto-item urgente">
+                    <span class="contacto-icon rojo"><i class="fas fa-bolt"></i></span>
+                    <div>
+                        <strong>Emergencias</strong>
+                        <span>Atención 24/7</span>
+                    </div>
+                </div>
+
+                <div class="contacto-diagnostico">
+                    <i class="fas fa-lock"></i>
+                    <p>Tus datos están protegidos.<br>
+                    Respondemos en menos de <strong>24 horas</strong>.</p>
+                </div>
+            </aside>
+
+            <!-- Formulario de diagnostico -->
+            <div class="diagnostic-form diag-claro">
+
+                <div class="diag-steps-header">
+                    <span id="diagPasoActual">1</span>&nbsp;de 5 · <em id="diagPasoTitulo">Tu propiedad</em>
+                </div>
+                <div class="diag-barra"><div class="diag-barra-fill" id="diagBarra"></div></div>
+
+                <form action="{{ url_for('public.diagnostic') }}" method="POST" accept-charset="utf-8"
+                      enctype="application/x-www-form-urlencoded" id="diagForm" autocomplete="on" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- Paso 1: condominio -->
+                    <fieldset class="step active" data-step="1">
+                        <label for="dCond">Condominio o departamento *</label>
+                        <input id="dCond" type="text" name="condominium_name" required
+                               maxlength="120" autocomplete="organization"
+                               placeholder="Ej: Condominio Los Alerces · Depto 302">
+
+                        <label for="dDir">Dirección (opcional)</label>
+                        <input id="dDir" type="text" name="address" maxlength="200"
+                               autocomplete="street-address" placeholder="Calle, número, comuna">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm);">
+                            <div>
+                                <label for="dEdad">Antigüedad del edificio *</label>
+                                <select id="dEdad" name="building_age" required>
+                                    <option value="" selected disabled>Selecciona...</option>
+                                    <option value="5">0 a 5 años</option>
+                                    <option value="15">6 a 15 años</option>
+                                    <option value="25">16 a 25 años</option>
+                                    <option value="35">26 a 35 años</option>
+                                    <option value="45">Más de 35 años</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="dUnidades">Número de unidades</label>
+                                <select id="dUnidades" name="units_count">
+                                    <option value="" selected disabled>Selecciona...</option>
+                                    <option value="10">Hasta 10</option>
+                                    <option value="30">11 a 50</option>
+                                    <option value="80">51 a 100</option>
+                                    <option value="150">Más de 100</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="diag-nav">
+                            <span></span>
+                            <button type="button" class="btn-next" data-siguiente>
+                                Siguiente <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <!-- Paso 2: problemas -->
+                    <fieldset class="step" data-step="2">
+                        <label>¿Qué problemas has detectado? * <small>(elige al menos uno)</small></label>
+                        {% set problemas = [
+                            ('fugas_agua', 'fa-droplet', 'Fugas de agua'),
+                            ('problemas_electricos', 'fa-bolt', 'Problemas eléctricos'),
+                            ('estructural', 'fa-trowel-bricks', 'Estructurales'),
+                            ('ascensor', 'fa-elevator', 'Ascensor'),
+                            ('humedad', 'fa-cloud-rain', 'Humedad'),
+                            ('jardineria', 'fa-leaf', 'Áreas verdes'),
+                            ('seguridad', 'fa-shield-halved', 'Seguridad'),
+                            ('saneamiento', 'fa-recycle', 'Saneamiento'),
+                        ] %}
+                        <div class="issue-grid">
+                            {% for valor, icono, texto in problemas %}
+                            <label class="issue-option">
+                                <input type="checkbox" name="issue_types" value="{{ valor }}">
+                                <i class="fas {{ icono }}"></i>
+                                <span>{{ texto }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        <p class="diag-error" data-error-for="issue_types" hidden>Selecciona al menos un problema.</p>
+
+                        <label for="dDesc">Describe brevemente el problema principal (opcional)</label>
+                        <textarea id="dDesc" name="issue_description" rows="3" maxlength="600"
+                                  placeholder="Texto plano, sin enlaces ni datos de tarjetas"></textarea>
+
+                        <div class="diag-nav">
+                            <button type="button" class="btn-back" data-anterior>
+                                <i class="fas fa-arrow-left"></i> Atrás
+                            </button>
+                            <button type="button" class="btn-next" data-siguiente>
+                                Siguiente <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <!-- Paso 3: urgencia y presupuesto -->
+                    <fieldset class="step" data-step="3">
+                        <label>¿Qué tan urgente es? *</label>
+                        <div class="radio-cards">
+                            <label class="radio-card"><input type="radio" name="urgency" value="low" required><span><strong>Baja</strong>Puede esperar</span></label>
+                            <label class="radio-card"><input type="radio" name="urgency" value="medium"><span><strong>Media</strong>Debería atenderse pronto</span></label>
+                            <label class="radio-card"><input type="radio" name="urgency" value="high"><span><strong>Alta</strong>Atención inmediata</span></label>
+                            <label class="radio-card"><input type="radio" name="urgency" value="critical"><span><strong>Crítica</strong>Emergencia</span></label>
+                        </div>
+
+                        <label for="dBudget" style="margin-top: var(--spacing-md);">Presupuesto estimado</label>
+                        <select id="dBudget" name="budget">
+                            <option value="0-200000" selected>$0 - $200.000</option>
+                            <option value="200000-500000">$200.000 - $500.000</option>
+                            <option value="500000-1000000">$500.000 - $1.000.000</option>
+                            <option value="1000000+">Más de $1.000.000</option>
+                        </select>
+
+                        <div class="diag-nav">
+                            <button type="button" class="btn-back" data-anterior>
+                                <i class="fas fa-arrow-left"></i> Atrás
+                            </button>
+                            <button type="button" class="btn-next" data-siguiente>
+                                Siguiente <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <!-- Paso 4: contacto preferido -->
+                    <fieldset class="step" data-step="4">
+                        <label>¿Cómo prefieres que te contactemos? *</label>
+                        <div class="radio-cards">
+                            <label class="radio-card"><input type="radio" name="contact_preference" value="email" checked><span><i class="fas fa-envelope"></i>Email</span></label>
+                            <label class="radio-card"><input type="radio" name="contact_preference" value="phone"><span><i class="fas fa-phone"></i>Teléfono</span></label>
+                            <label class="radio-card"><input type="radio" name="contact_preference" value="whatsapp"><span><i class="fab fa-whatsapp"></i>WhatsApp</span></label>
+                        </div>
+
+                        <div class="diag-nav">
+                            <button type="button" class="btn-back" data-anterior>
+                                <i class="fas fa-arrow-left"></i> Atrás
+                            </button>
+                            <button type="button" class="btn-next" data-siguiente>
+                                Siguiente <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </fieldset>
+
+                    <!-- Paso 5: datos personales -->
+                    <fieldset class="step" data-step="5">
+                        <label for="dNombre">Tu nombre *</label>
+                        <input id="dNombre" type="text" name="client_name" required maxlength="100"
+                               autocomplete="name" pattern="[A-Za-zÁÉÍÓÚÑáéíóúñüÜ'.\- ]{2,100}"
+                               title="Solo letras, espacios, puntos y guiones"
+                               placeholder="Nombre y apellido">
+
+                        <label for="dEmail">Email *</label>
+                        <input id="dEmail" type="email" name="client_email" required maxlength="120"
+                               autocomplete="email" placeholder="tucorreo@ejemplo.cl">
+
+                        <label for="dFono">Teléfono (opcional)</label>
+                        <input id="dFono" type="tel" name="client_phone" maxlength="20"
+                               autocomplete="tel" pattern="\+?[0-9\s\-]{7,20}"
+                               title="Solo números, espacios y el signo +"
+                               placeholder="+56 9 1234 5678">
+
+                        <p class="diag-privacidad">
+                            <i class="fas fa-lock"></i> Solo usaremos tus datos para enviarte el resultado.
+                        </p>
+
+                        <div class="diag-nav">
+                            <button type="button" class="btn-back" data-anterior>
+                                <i class="fas fa-arrow-left"></i> Atrás
+                            </button>
+                            <button type="submit" class="btn-next" style="flex: 1; justify-content: center;">
+                                <i class="fas fa-paper-plane"></i> Enviar Diagnóstico
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/diagnostico-wizard.js', v=asset_v) }}"></script>
+{% endblock %}

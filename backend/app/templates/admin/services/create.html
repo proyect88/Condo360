@@ -1,0 +1,60 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Nuevo Servicio - Admin{% endblock %}
+{% block page_title %}Nuevo Servicio{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('admin.create_service') }}" class="admin-form">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+        {{ form.name.label }} {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+        {% for error in form.name.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+    </div>
+
+    <div class="form-group">
+        {{ form.short_description.label }} {{ form.short_description(class="form-control", placeholder="Resumen breve para tarjetas") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.description.label }} {{ form.description(class="form-control", rows=6) }}
+        {% for error in form.description.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-group">
+            {{ form.category.label }} {{ form.category(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.icon.label }}
+            {{ form.icon(class="form-control", placeholder="fa-wrench") }}
+            <span class="form-text">Clase de FontAwesome 6, ejemplo: fa-helmet-safety</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form.price_from.label }} {{ form.price_from(class="form-control", step="1000", min="0") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.features.label }} {{ form.features(class="form-control", rows=3) }}
+        <span class="form-text">Separa cada característica con coma.</span>
+    </div>
+
+    <div class="form-group">
+        {{ form.order.label }} {{ form.order(class="form-control", min="0") }}
+    </div>
+
+    <div class="form-group form-check">
+        {{ form.is_active() }} {{ form.is_active.label }}
+    </div>
+    <div class="form-group form-check">
+        {{ form.is_featured() }} {{ form.is_featured.label }}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+        <a href="{{ url_for('admin.list_services') }}" class="btn-outline">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

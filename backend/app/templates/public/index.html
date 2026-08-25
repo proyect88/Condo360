@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Condo Services 360 - Mantenimiento Integral para Condominios{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="hero">
+    <div class="container hero-grid">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-award"></i> Expertos en Mantenimiento de Condominios y Departamentos
+            </div>
+            <h1>
+                Servicios Integrales para<br>
+                <span class="highlight">Tu Condominio</span>
+            </h1>
+            <p>
+                Albañilería, plomería, electricidad, jardinería y mantenimiento de ascensores.
+                Más de 10 años cuidando tu patrimonio.
+            </p>
+            <div class="hero-cta">
+                <a href="{{ url_for('public.diagnostic') }}" class="btn-hero-primary">
+                    <i class="fas fa-stethoscope"></i> Diagnóstico Gratuito
+                </a>
+                <a href="{{ url_for('public.contact') }}" class="btn-hero-secondary">
+                    <i class="fas fa-phone"></i> Solicitar Presupuesto
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="glass-card">
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ stats.services_count }}</div>
+                        <div class="stat-label">Servicios</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ stats.clients_satisfied }}+</div>
+                        <div class="stat-label">Clientes Satisfechos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ stats.projects_completed }}+</div>
+                        <div class="stat-label">Proyectos Completados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-element floating-element-1"></div>
+    <div class="floating-element floating-element-2"></div>
+</section>
+
+<!-- Services Section -->
+<section class="section-services" id="servicios">
+    <div class="container">
+        <div class="section-header">
+            <h2>Nuestros <span class="text-gradient">Servicios</span></h2>
+            <p>Soluciones integrales de mantenimiento para condominios y departamentos</p>
+        </div>
+
+        <div class="services-grid">
+            {% for service in services %}
+            <div class="service-card">
+                <div class="icon-wrapper">
+                    <i class="fas {{ service.icon or 'fa-wrench' }}"></i>
+                </div>
+                <h3>{{ service.name }}</h3>
+                <p>{{ service.short_description or service.description[:120] }}</p>
+                {% if service.price_from %}
+                <div class="price">Desde {{ service.price_from|format_currency }}</div>
+                {% endif %}
+                <ul class="features">
+                    {% for feature in service.feature_list[:3] %}
+                    <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('public.service_detail', slug=service.slug) }}" class="btn-service">
+                    Ver más <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Diagnostic CTA Section -->
+<section class="section-diagnostic" id="diagnostico">
+    <div class="container">
+        <div class="diagnostic-wrapper">
+            <div>
+                <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-gold); margin-bottom: 0.5rem;">
+                    <i class="fas fa-heartbeat"></i> Diagnóstico Rápido
+                </div>
+                <h2 style="font-size: 2.5rem; color: var(--white); margin-bottom: var(--spacing-md);">
+                    ¿Qué necesita <span style="color: var(--accent-gold);">tu condominio o departamento</span>?
+                </h2>
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.15rem; margin-bottom: var(--spacing-lg);">
+                    Responde 5 preguntas rápidas y obtén un diagnóstico preliminar de las necesidades de mantenimiento de tu propiedad.
+                </p>
+                <a href="{{ url_for('public.diagnostic') }}" class="btn-hero-primary">
+                    <i class="fas fa-play"></i> Comenzar Diagnóstico
+                </a>
+            </div>
+
+            <div class="diagnostic-form">
+                <div class="diagnostic-progress">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+
+                <form action="{{ url_for('public.diagnostic') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="condominium_name" value="">
+                    <div class="step active" data-step="1">
+                        <label>¿Cuántos años tiene tu edificio?</label>
+                        <select name="building_age" required>
+                            <option value="">Selecciona...</option>
+                            <option value="5">0-5 años</option>
+                            <option value="15">6-15 años</option>
+                            <option value="25">16-25 años</option>
+                            <option value="35">26-35 años</option>
+                            <option value="45">Más de 35 años</option>
+                        </select>
+                        <button type="button" class="btn-next" data-accion="siguiente">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="step" data-step="2">
+                        <label>¿Qué problemas has detectado?</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: var(--spacing-md);">
+                            <label><input type="checkbox" name="issue_types" value="fugas_agua"> Fugas de agua</label>
+                            <label><input type="checkbox" name="issue_types" value="problemas_electricos"> Problemas eléctricos</label>
+                            <label><input type="checkbox" name="issue_types" value="estructural"> Problemas estructurales</label>
+                            <label><input type="checkbox" name="issue_types" value="ascensor"> Ascensor</label>
+                            <label><input type="checkbox" name="issue_types" value="humedad"> Humedad</label>
+                            <label><input type="checkbox" name="issue_types" value="jardineria"> Jardinería</label>
+                        </div>
+                        <button type="button" class="btn-next" data-accion="siguiente">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="step" data-step="3">
+                        <label>¿Qué tan urgente es?</label>
+                        <select name="urgency" required>
+                            <option value="low">Baja - Puede esperar</option>
+                            <option value="medium">Media - Debería atenderse pronto</option>
+                            <option value="high">Alta - Necesita atención inmediata</option>
+                            <option value="critical">Crítica - Emergencia</option>
+                        </select>
+                        <button type="button" class="btn-next" data-accion="siguiente">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="step" data-step="4">
+                        <label>¿Cuál es tu presupuesto estimado?</label>
+                        <select name="budget" required>
+                            <option value="0-200000">$0 - $200.000</option>
+                            <option value="200000-500000">$200.000 - $500.000</option>
+                            <option value="500000-1000000">$500.000 - $1.000.000</option>
+                            <option value="1000000+">Más de $1.000.000</option>
+                        </select>
+                        <button type="button" class="btn-next" data-accion="siguiente">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="step" data-step="5">
+                        <label>¡Casi listo! Déjanos tus datos</label>
+                        <input type="text" name="client_name" placeholder="Tu nombre" required>
+                        <input type="email" name="client_email" placeholder="Email" required>
+                        <input type="tel" name="client_phone" placeholder="Teléfono">
+                        <input type="text" name="condominium_name_final" placeholder="Condominio o departamento (ej: Los Alerces, Depto 302)">
+                        <button type="submit" class="btn-next" style="width: 100%; justify-content: center;">
+                            <i class="fas fa-paper-plane"></i> Enviar Diagnóstico
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="section-testimonials" id="testimonios">
+    <div class="container">
+        <div class="section-header">
+            <h2>Lo que dicen <span class="text-gradient">nuestros clientes</span></h2>
+            <p style="white-space: nowrap; font-size: clamp(0.78rem, 2.7vw, 1.15rem);">Experiencias reales de administradores, comités y residentes</p>
+        </div>
+
+        {% if testimonials %}
+        {% include 'public/_carrusel_testimonios.html' %}
+        {% endif %}
+    </div>
+</section>
+
+<!-- Contact CTA Section -->
+<section style="padding: var(--spacing-xxl) 0; background: var(--neutral-100);">
+    <div class="container" style="text-align: center;">
+        <div style="max-width: 700px; margin: 0 auto;">
+            <h2 style="font-size: 2.5rem; margin-bottom: var(--spacing-md);">
+                ¿Listo para <span class="text-gradient">mejorar tu condominio o departamento</span>?
+            </h2>
+            <p style="color: var(--neutral-600); font-size: 1.15rem; margin-bottom: var(--spacing-lg);">
+                Solicita un presupuesto sin compromiso. Respondemos en menos de 24 horas.
+            </p>
+            <a href="{{ url_for('public.contact') }}" class="btn-hero-primary">
+                <i class="fas fa-paper-plane"></i> Solicitar Presupuesto
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home-diagnostico.js', v=asset_v) }}"></script>
+<script src="{{ url_for('static', filename='js/testimonials-carousel.js', v=asset_v) }}"></script>
+{% endblock %}

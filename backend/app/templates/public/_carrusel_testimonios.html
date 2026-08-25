@@ -1,0 +1,39 @@
+{# Carrusel de testimonios compartido: recibe la variable `testimonials` #}
+<div class="testi-carousel" id="testiCarousel">
+    <button class="testi-arrow testi-prev" aria-label="Anterior">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <div class="testi-viewport">
+        <div class="testi-track">
+            {% for testimonial in testimonials %}
+            <div class="testi-slide">
+                <div class="testimonial-card">
+                    <div class="stars">{{ testimonial.rating_stars }}</div>
+                    <blockquote>"{{ testimonial.content }}"</blockquote>
+                    <div class="client-info">
+                        <div class="client-avatar">{{ testimonial.client_initials }}</div>
+                        <div>
+                            <div class="client-name">{{ testimonial.client_name }}</div>
+                            <div class="client-position">
+                                {{ testimonial.client_position }}{% if testimonial.condominium_name %} - {{ testimonial.condominium_name }}{% endif %}
+                            </div>
+                            {% if testimonial.service_name %}
+                            <div style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 0.2rem;">
+                                Servicio: {{ testimonial.service_name }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button class="testi-arrow testi-next" aria-label="Siguiente">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div class="testi-dots"></div>
+</div>

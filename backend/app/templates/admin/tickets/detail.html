@@ -1,0 +1,101 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Ticket {{ ticket.ticket_number }} - Admin{% endblock %}
+{% block page_title %}Ticket {{ ticket.ticket_number }}{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; align-items: start;">
+    <!-- Detalle -->
+    <div class="table-container">
+        <div class="table-header">
+            <span class="table-title">Detalle de la solicitud</span>
+            <span class="badge badge-{{ ticket.status_color }}">{{ ticket.status_label }}</span>
+        </div>
+
+        <table>
+            <tr>
+                <th style="width: 180px;">Cliente</th>
+                <td>{{ ticket.client_name }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td><a href="mailto:{{ ticket.client_email }}">{{ ticket.client_email }}</a></td>
+            </tr>
+            <tr>
+                <th>Teléfono</th>
+                <td>{{ ticket.client_phone or '-' }}</td>
+            </tr>
+            <tr>
+                <th>Condominio</th>
+                <td>{{ ticket.condominium_name or '-' }}</td>
+            </tr>
+            <tr>
+                <th>Dirección</th>
+                <td>{{ [ticket.address, ticket.building and ('Edif. ' ~ ticket.building), ticket.floor and ('Piso ' ~ ticket.floor)] | select('string') | join(', ') if ticket.address else '-' }}</td>
+            </tr>
+            <tr>
+                <th>Servicio</th>
+                <td>{{ ticket.service_type }}</td>
+            </tr>
+            <tr>
+                <th>Urgencia</th>
+                <td><span class="badge badge-{{ ticket.urgency_color }}">{{ ticket.urgency_label }}</span></td>
+            </tr>
+            <tr>
+                <th>Creado</th>
+                <td>{{ ticket.created_at|format_date }}</td>
+            </tr>
+            {% if ticket.resolved_at %}
+            <tr>
+                <th>Resuelto</th>
+                <td>{{ ticket.resolved_at|format_date }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Descripción</th>
+                <td style="white-space: pre-wrap;">{{ ticket.description }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Actualizar -->
+    <div>
+        <form method="POST" action="{{ url_for('admin.update_ticket', id=ticket.id) }}" class="admin-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <h3 style="margin-bottom: 1.25rem;">Actualizar ticket</h3>
+
+            <div class="form-group">
+                <label for="status">Estado</label>
+                <select id="status" name="status" class="form-control" data-current-status="{{ ticket.status }}">
+                    <option value="new" {{ 'selected' if ticket.status == 'new' }}>Nuevo</option>
+                    <option value="in_progress" {{ 'selected' if ticket.status == 'in_progress' }}>En Progreso</option>
+                    <option value="resolved" {{ 'selected' if ticket.status == 'resolved' }}>Resuelto</option>
+                    <option value="closed" {{ 'selected' if ticket.status == 'closed' }}>Cerrado</option>
+                    <option value="cancelled" {{ 'selected' if ticket.status == 'cancelled' }}>Cancelado</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="assigned_to">Asignar a</label>
+                <select id="assigned_to" name="assigned_to" class="form-control">
+                    <option value="">Sin asignar</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}" {{ 'selected' if ticket.assigned_to == user.id }}>{{ user.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notas internas</label>
+                <textarea id="notes" name="notes" rows="5" class="form-control">{{ ticket.admin_notes or '' }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                <a href="{{ url_for('admin.list_tickets') }}" class="btn-outline">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

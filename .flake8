@@ -1,0 +1,11 @@
+[flake8]
+max-line-length = 120
+extend-ignore = E203, W503, E402
+per-file-ignores =
+    scripts/seed_data.py: E501
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    migrations,
+    instance

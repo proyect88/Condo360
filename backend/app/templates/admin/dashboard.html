@@ -1,0 +1,120 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Dashboard - Admin Condo Services 360{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dbeafe; color: #1e40af;">
+            <i class="fas fa-ticket-simple"></i>
+        </div>
+        <div class="stat-number">{{ total_tickets }}</div>
+        <div class="stat-label">Tickets totales</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #92400e;">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-number">{{ pending_tickets }}</div>
+        <div class="stat-label">Tickets pendientes</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #d1fae5; color: #065f46;">
+            <i class="fas fa-circle-check"></i>
+        </div>
+        <div class="stat-number">{{ resolved_tickets }}</div>
+        <div class="stat-label">Resueltos</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fee2e2; color: #991b1b;">
+            <i class="fas fa-triangle-exclamation"></i>
+        </div>
+        <div class="stat-number">{{ critical_tickets }}</div>
+        <div class="stat-label">Urgencias críticas</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #e3eef7; color: var(--primary-600);">
+            <i class="fas fa-screwdriver-wrench"></i>
+        </div>
+        <div class="stat-number">{{ active_services }}/{{ total_services }}</div>
+        <div class="stat-label">Servicios activos</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #92400e;">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="stat-number">{{ pending_testimonials }}</div>
+        <div class="stat-label">Testimonios por aprobar</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dbeafe; color: #1e40af;">
+            <i class="fas fa-stethoscope"></i>
+        </div>
+        <div class="stat-number">{{ pending_diagnostics }}</div>
+        <div class="stat-label">Diagnósticos pendientes</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start;">
+    <!-- Tickets recientes -->
+    <div class="table-container">
+        <div class="table-header">
+            <span class="table-title">Tickets recientes</span>
+            <a href="{{ url_for('admin.list_tickets') }}" class="btn-outline btn-sm">Ver todos</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Servicio</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in recent_tickets %}
+                <tr>
+                    <td><a href="{{ url_for('admin.view_ticket', id=ticket.id) }}"><strong>{{ ticket.ticket_number }}</strong></a></td>
+                    <td>{{ ticket.client_name }}</td>
+                    <td>{{ ticket.service_type }}</td>
+                    <td><span class="badge badge-{{ ticket.status_color }}">{{ ticket.status_label }}</span></td>
+                    <td>{{ ticket.created_at|format_date }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #6b7280;">No hay tickets aún</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Servicios más solicitados -->
+    <div class="table-container">
+        <div class="table-header">
+            <span class="table-title">Servicios más solicitados</span>
+        </div>
+        {% if top_services %}
+        <ul style="list-style: none;">
+            {% for name, count in top_services %}
+            <li style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f3f4f6;">
+                <span>{{ name }}</span>
+                <span class="badge badge-primary">{{ count }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: #6b7280;">Sin datos suficientes todavía.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

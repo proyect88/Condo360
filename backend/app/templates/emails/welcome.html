@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background: #f0f2f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding: 24px 12px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb;">
+                    <tr>
+                        <td style="background: #1a365d; color: #ffffff; padding: 20px 32px;">
+                            <h2 style="margin: 0; font-size: 18px;">Bienvenido a Condo Services 360</h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 28px 32px;">
+                            <p>Hola <strong>{{ user.full_name }}</strong>,</p>
+
+                            <p>Tu cuenta de acceso al panel de administración ha sido creada con el rol
+                            <strong>{{ user.role }}</strong>.</p>
+
+                            <p>Puedes acceder al panel con tu email <strong>{{ user.email }}</strong>
+                            y la contraseña que te fue asignada.</p>
+
+                            <p style="background: #fef3c7; color: #92400e; padding: 14px; border-radius: 8px; font-size: 14px;">
+                                Recomendamos cambiar tu contraseña en el primer inicio de sesión.
+                            </p>
+
+                            <p style="margin-bottom: 0;">Atentamente,<br><strong>Equipo Condo Services 360</strong></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background: #f9fafb; padding: 16px 32px; text-align: center;">
+                            <p style="margin: 0; font-size: 13px; color: #6b7280;">
+                                &copy; 2026 Condo Services 360 - Santiago, Chile
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

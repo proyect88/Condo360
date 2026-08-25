@@ -1,0 +1,39 @@
+# Core Flask
+Flask==3.1.3
+Werkzeug==3.1.6
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+Flask-Login==0.6.3
+Flask-WTF==1.2.1
+Flask-Mail==0.10.0
+
+# Database
+psycopg2-binary==2.9.9
+alembic==1.12.1
+
+# Utils
+python-dotenv==1.2.2
+Pillow==12.3.0
+python-magic==0.4.27
+email_validator==2.1.1
+
+# Security
+bcrypt==4.1.2
+cryptography==50.0.0
+
+# Rate limit distribuido (opcional: solo si REDIS_URL esta definida)
+redis==5.0.8
+
+# Development
+pytest==9.0.3
+pytest-cov==4.1.0
+black==26.3.1
+flake8==6.1.0
+pip-audit==2.7.3
+
+# Production
+gunicorn==23.0.0
+gevent==23.9.1
+
+# API
+flask-cors==6.0.0

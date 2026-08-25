@@ -1,0 +1,50 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Nuevo Testimonio - Admin{% endblock %}
+{% block page_title %}Nuevo Testimonio{% endblock %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('admin.create_testimonial') }}" class="admin-form">
+    {{ form.hidden_tag() }}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-group">
+            {{ form.client_name.label }} {{ form.client_name(class="form-control") }}
+            {% for error in form.client_name.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.client_position.label }} {{ form.client_position(class="form-control", placeholder="Presidente / Administrador") }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form.condominium_name.label }} {{ form.condominium_name(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.content.label }} {{ form.content(class="form-control", rows=5) }}
+        {% for error in form.content.errors %}<span class="form-text" style="color: #ef4444;">{{ error }}</span>{% endfor %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-group">
+            {{ form.rating.label }} {{ form.rating(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.service_id.label }} {{ form.service_id(class="form-control") }}
+        </div>
+    </div>
+
+    <div class="form-group form-check">
+        {{ form.is_approved() }} {{ form.is_approved.label }}
+    </div>
+    <div class="form-group form-check">
+        {{ form.is_featured() }} {{ form.is_featured.label }}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+        <a href="{{ url_for('admin.list_testimonials') }}" class="btn-outline">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

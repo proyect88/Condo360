@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="{{ config.get('PWA_THEME_COLOR', '#1a365d') }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <title>{% block title %}Condo Services 360 - Mantenimiento Integral para Condominios y Departamentos{% endblock %}</title>
+    <meta name="description" content="{% block description %}Servicios profesionales para condominios y departamentos: albañilería, plomería, electricidad, jardinería y ascensores. Diagnóstico rápido y presupuesto sin compromiso.{% endblock %}">
+
+    <!-- CSRF -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/static/images/icons/icon-192x192.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Condo Services 360">
+    <meta property="og:description" content="Mantenimiento integral para condominios y departamentos">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.jpg', _external=True) }}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=asset_v) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css', v=asset_v) }}">
+
+    <!-- Fonts (autoalojadas) -->
+    <link rel="stylesheet" href="/static/vendor/fonts/fonts.css">
+    <!-- Font Awesome 6.5 (autoalojado) -->
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css">
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container" style="position: fixed; top: 90px; right: 20px; z-index: 10000;">
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}" style="background: var(--white); border-left: 4px solid {{ 'var(--success)' if category == 'success' else 'var(--danger)' if category == 'danger' else 'var(--primary)' }}; padding: var(--spacing-md) var(--spacing-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); margin-bottom: var(--spacing-sm); min-width: 280px;">
+                {{ message }}
+                <button type="button" data-cerrar-flash style="float: right; background: none; border: none; cursor: pointer; font-size: 1.1rem;">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Notifications -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="container header-content">
+            <a href="{{ url_for('public.index') }}" class="logo">
+                <span class="icon">CS</span>
+                <span>Condo<span style="color: var(--accent-gold);">360</span></span>
+            </a>
+
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="{{ url_for('public.index') }}">Inicio</a></li>
+                    <li><a href="{{ url_for('public.services') }}">Servicios</a></li>
+                    <li><a href="{{ url_for('public.testimonials') }}">Testimonios</a></li>
+                    <li><a href="{{ url_for('public.diagnostic') }}">Diagnóstico</a></li>
+                    <li><a href="{{ url_for('public.contact') }}" class="btn-primary">Solicitar Presupuesto</a></li>
+                </ul>
+            </nav>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: linear-gradient(180deg, var(--primary-900) 0%, var(--primary-800) 100%); color: rgba(255,255,255,0.72); padding: var(--spacing-xl) 0;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                <div>
+                    <h4 style="color: var(--white); margin-bottom: var(--spacing-sm); font-family: var(--font-heading);">Condo Services 360</h4>
+                    <p style="line-height: 1.8;">Mantenimiento integral para condominios y departamentos. Expertos en albañilería, plomería, electricidad, jardinería y ascensores.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--white); margin-bottom: var(--spacing-sm); font-family: var(--font-heading);">Servicios</h4>
+                    <ul style="list-style: none; line-height: 2;">
+                        <li><a href="{{ url_for('public.services') }}?categoria=albanileria" class="footer-link">Albañilería</a></li>
+                        <li><a href="{{ url_for('public.services') }}?categoria=plomeria" class="footer-link">Plomería</a></li>
+                        <li><a href="{{ url_for('public.services') }}?categoria=electricidad" class="footer-link">Electricidad</a></li>
+                        <li><a href="{{ url_for('public.services') }}?categoria=jardineria" class="footer-link">Jardinería</a></li>
+                        <li><a href="{{ url_for('public.services') }}?categoria=ascensores" class="footer-link">Ascensores</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--white); margin-bottom: var(--spacing-sm); font-family: var(--font-heading);">Contacto</h4>
+                    <p style="margin-bottom: 0.5rem;"><i class="fas fa-phone" style="color: var(--accent-gold); width: 20px;"></i> +56 9 1234 5678</p>
+                    <p style="margin-bottom: 0.5rem;"><i class="fas fa-envelope" style="color: var(--accent-gold); width: 20px;"></i> info@condoservices360.cl</p>
+                    <p><i class="fas fa-map-marker-alt" style="color: var(--accent-gold); width: 20px;"></i> Santiago, Chile</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--white); margin-bottom: var(--spacing-sm); font-family: var(--font-heading);">Horario</h4>
+                    <p style="margin-bottom: 0.5rem;">Lun - Vie: 8:00 - 18:00</p>
+                    <p>Emergencias: 24/7</p>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.14); padding-top: var(--spacing-md); text-align: center;">
+                <p>&copy; 2026 Condo Services 360. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js', v=asset_v) }}"></script>
+    <script src="{{ url_for('static', filename='js/pwa.js', v=asset_v) }}"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

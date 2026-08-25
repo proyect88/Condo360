@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Testimonios - Condo Services 360{% endblock %}
+{% block description %}Lo que dicen nuestros clientes sobre nuestros servicios de mantenimiento para condominios y departamentos.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+        <div class="container">
+        <h1>Lo que dicen <span class="highlight">nuestros clientes</span></h1>
+        <p>Experiencias reales de administradores, comités y residentes</p>
+    </div>
+    </section>
+
+<section style="padding: var(--spacing-xl) 0;">
+    <div class="container">
+        {% if testimonials %}
+        <div class="testi-carousel" id="testiCarousel">
+            <button class="testi-arrow testi-prev" aria-label="Anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="testi-viewport">
+                <div class="testi-track">
+                    {% for testimonial in testimonials %}
+                    <div class="testi-slide">
+                        <div class="testimonial-card">
+                            <div class="stars">{{ testimonial.rating_stars }}</div>
+                            <blockquote>"{{ testimonial.content }}"</blockquote>
+                            <div class="client-info">
+                                <div class="client-avatar">{{ testimonial.client_initials }}</div>
+                                <div>
+                                    <div class="client-name">{{ testimonial.client_name }}</div>
+                                    <div class="client-position">
+                                        {{ testimonial.client_position }}{% if testimonial.condominium_name %} - {{ testimonial.condominium_name }}{% endif %}
+                                    </div>
+                                    {% if testimonial.service_name %}
+                                    <div style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 0.2rem;">
+                                        Servicio: {{ testimonial.service_name }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button class="testi-arrow testi-next" aria-label="Siguiente">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="testi-dots"></div>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--neutral-600);">
+            Aún no hay testimonios publicados. Sé el primero en compartir tu experiencia.
+        </p>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: var(--spacing-xl);">
+            <a href="{{ url_for('public.contact') }}" class="btn-hero-primary">
+                <i class="fas fa-paper-plane"></i> Solicitar Presupuesto
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/testimonials-carousel.js', v=asset_v) }}"></script>
+{% endblock %}

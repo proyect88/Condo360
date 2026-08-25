@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Preguntas Frecuentes - Condo Services 360{% endblock %}
+{% block description %}Respuestas a las preguntas más frecuentes sobre nuestros servicios de mantenimiento para condominios.{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: auto; padding: calc(var(--header-height) + var(--spacing-xl)) 0 var(--spacing-lg);">
+    <div class="container" style="text-align: center;">
+        <h1>Preguntas <span class="highlight">Frecuentes</span></h1>
+        <p>Todo lo que necesitas saber sobre nuestros servicios</p>
+    </div>
+</section>
+
+<section style="padding: var(--spacing-xl) 0;">
+    <div class="container">
+        {% set faqs = [
+            ('¿Cómo solicito un presupuesto?', 'Puedes solicitar un presupuesto completando el formulario de contacto, llamando al +56 9 1234 5678 o escribiéndonos a info@condoservices360.cl. Respondemos en menos de 24 horas hábiles.'),
+            ('¿La visita técnica tiene costo?', 'No. La primera visita de diagnóstico técnico es completamente gratuita y sin compromiso dentro de Santiago.'),
+            ('¿Qué servicios ofrecen?', 'Albañilería, plomería, electricidad, jardinería, mantenimiento de ascensores y gestión integral de mantenimiento para condominios.'),
+            ('¿Trabajan con condominios grandes?', 'Sí. Atendemos desde comunidades pequeñas hasta condominios de cientos de unidades, con contratos de mantenimiento preventivo personalizados.'),
+            ('¿Emiten factura?', 'Sí, emitimos factura electrónica para todas nuestras operaciones.'),
+            ('¿Atienden emergencias?', 'Sí, contamos con servicio de emergencias 24/7 para casos críticos como fugas de agua, cortes eléctricos o fallas de ascensor.'),
+            ('¿Qué regiones cubren?', 'Actualmente operamos en la Región Metropolitana. Para otras regiones, contáctanos y evaluamos cada caso.'),
+            ('¿Cómo funciona el diagnóstico online?', 'Respondes unas breves preguntas sobre tu condominio y nuestro sistema genera un plan preliminar con prioridades, plazos sugeridos y una estimación referencial de costo.')
+        ] %}
+        <div style="max-width: 800px; margin: 0 auto;">
+            {% for question, answer in faqs %}
+            <details style="background: var(--white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); margin-bottom: var(--spacing-md); padding: var(--spacing-md) var(--spacing-lg); cursor: pointer;">
+                <summary style="font-weight: 700; color: var(--neutral-900); font-size: 1.05rem;">
+                    {{ question }}
+                </summary>
+                <p style="margin-top: var(--spacing-sm); color: var(--neutral-600); line-height: 1.8; cursor: default;">
+                    {{ answer }}
+                </p>
+            </details>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: var(--spacing-xl);">
+            <p style="color: var(--neutral-600); margin-bottom: var(--spacing-md);">¿Tienes otra pregunta?</p>
+            <a href="{{ url_for('public.contact') }}" class="btn-hero-primary">
+                <i class="fas fa-envelope"></i> Contáctanos
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

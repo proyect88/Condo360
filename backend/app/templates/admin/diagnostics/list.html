@@ -1,0 +1,46 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Diagnósticos - Admin{% endblock %}
+{% block page_title %}Diagnósticos{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div class="table-header">
+        <span class="table-title">{{ diagnostics|length }} diagnóstico(s)</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Token</th>
+                <th>Condominio</th>
+                <th>Problemas</th>
+                <th>Urgencia</th>
+                <th>Servicio recomendado</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for diagnostic in diagnostics %}
+            <tr>
+                <td><a href="{{ url_for('admin.view_diagnostic', id=diagnostic.id) }}"><strong>{{ diagnostic.diagnostic_token[:12] }}...</strong></a></td>
+                <td>{{ diagnostic.condominium_name }}</td>
+                <td>{{ diagnostic.issue_count }}</td>
+                <td>{{ diagnostic.urgency_label }} ({{ diagnostic.urgency_score }}/10)</td>
+                <td>{{ diagnostic.recommended_service.name if diagnostic.recommended_service else '-' }}</td>
+                <td>
+                    <span class="badge {{ 'badge-warning' if diagnostic.status == 'pending' else 'badge-success' if diagnostic.status == 'contacted' else 'badge-info' }}">
+                        {{ {'draft': 'Borrador', 'pending': 'Pendiente', 'reviewed': 'Revisado', 'contacted': 'Contactado'}.get(diagnostic.status, diagnostic.status) }}
+                    </span>
+                </td>
+                <td>{{ diagnostic.created_at|format_date }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #6b7280;">No hay diagnósticos aún</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

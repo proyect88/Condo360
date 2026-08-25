@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background: #f0f2f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding: 24px 12px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb;">
+                    <tr>
+                        <td style="background: #1a365d; color: #ffffff; padding: 20px 32px;">
+                            <h2 style="margin: 0; font-size: 18px;">Nuevo Diagnóstico Completado</h2>
+                            <p style="margin: 4px 0 0; opacity: 0.85; font-size: 13px;">Generado desde el diagnóstico interactivo</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 28px 32px;">
+                            <table role="presentation" width="100%" cellpadding="6">
+                                <tr>
+                                    <td style="color: #6b7280;">Token:</td>
+                                    <td><strong style="color: #1a365d;">{{ diagnostic.diagnostic_token }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #6b7280;">Condominio:</td>
+                                    <td>{{ diagnostic.condominium_name }}</td>
+                                </tr>
+                                {% if diagnostic.building_age %}
+                                <tr>
+                                    <td style="color: #6b7280;">Antigüedad:</td>
+                                    <td>{{ diagnostic.building_age }} años</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td style="color: #6b7280;">Nivel de urgencia:</td>
+                                    <td><strong>{{ diagnostic.urgency_label }} ({{ diagnostic.urgency_score }}/10)</strong></td>
+                                </tr>
+                            </table>
+
+                            <h3 style="font-size: 15px; margin-bottom: 4px;">Problemas detectados</h3>
+                            <p style="background: #f9fafb; padding: 14px; border-radius: 8px; margin-top: 0;">
+                                {{ diagnostic.issues|join(', ') if diagnostic.issues else 'Sin problemas registrados' }}
+                            </p>
+
+                            {% if diagnostic.client_email %}
+                            <p>Datos de contacto: <strong>{{ diagnostic.client_name or '-' }}</strong> &middot;
+                               {{ diagnostic.client_email }} &middot; {{ diagnostic.client_phone or '-' }}</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background: #f9fafb; padding: 16px 32px; text-align: center;">
+                            <a href="{{ url_for('admin.view_diagnostic', id=diagnostic.id, _external=True) }}"
+                               style="display: inline-block; background: #1a365d; color: #ffffff; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-weight: bold;">
+                                Ver diagnóstico en el panel
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

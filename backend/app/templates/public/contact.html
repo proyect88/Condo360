@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Contacto y Presupuestos - Condo Services 360{% endblock %}
+{% block description %}Solicita un presupuesto sin compromiso para el mantenimiento de tu condominio o departamento. Respondemos en menos de 24 horas.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+        <div class="container">
+        <h1>Solicita tu <span class="highlight">Presupuesto</span></h1>
+        <p>Completa el formulario y te contactaremos en menos de 24 horas</p>
+    </div>
+    </section>
+
+<section style="padding: var(--spacing-md) 0 var(--spacing-xl); background: var(--white);">
+    <div class="container">
+        <div class="contacto-layout">
+
+            <!-- Información de contacto -->
+            <aside class="contacto-info">
+                <h2>Datos de contacto</h2>
+                <p class="contacto-info-sub">Atendemos condominios completos y departamentos individuales.</p>
+
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-phone"></i></span>
+                    <div>
+                        <strong>Teléfono</strong>
+                        <span>+56 9 1234 5678</span>
+                    </div>
+                </div>
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-envelope"></i></span>
+                    <div>
+                        <strong>Email</strong>
+                        <span>info@condoservices360.cl</span>
+                    </div>
+                </div>
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <div>
+                        <strong>Ubicación</strong>
+                        <span>Santiago, Chile</span>
+                    </div>
+                </div>
+                <div class="contacto-item">
+                    <span class="contacto-icon"><i class="fas fa-clock"></i></span>
+                    <div>
+                        <strong>Horario</strong>
+                        <span>Lun - Vie: 8:00 - 18:00</span>
+                    </div>
+                </div>
+                <div class="contacto-item urgente">
+                    <span class="contacto-icon rojo"><i class="fas fa-bolt"></i></span>
+                    <div>
+                        <strong>Emergencias</strong>
+                        <span>Atención 24/7</span>
+                    </div>
+                </div>
+
+                <div class="contacto-diagnostico">
+                    <i class="fas fa-stethoscope"></i>
+                    <p>¿No sabes qué necesitas?<br>
+                    <a href="{{ url_for('public.diagnostic') }}">Haz el diagnóstico gratuito</a></p>
+                </div>
+            </aside>
+
+            <!-- Formulario -->
+            <div class="contacto-card">
+                <h2>Cuéntanos tu necesidad</h2>
+                <p class="contacto-card-sub">Campos con * son obligatorios</p>
+
+                <form method="POST" action="{{ url_for('public.contact') }}" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="contacto-grid2">
+                        <div class="campo">
+                            <label for="name">Nombre completo *</label>
+                            <input type="text" id="name" name="name" required maxlength="100"
+                                   autocomplete="name" placeholder="Juan Pérez">
+                        </div>
+                        <div class="campo">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required maxlength="120"
+                                   autocomplete="email" placeholder="juan@condominio.cl">
+                        </div>
+                    </div>
+
+                    <div class="contacto-grid2">
+                        <div class="campo">
+                            <label for="phone">Teléfono</label>
+                            <input type="tel" id="phone" name="phone" maxlength="20"
+                                   autocomplete="tel" pattern="\+?[0-9\s\-]{7,20}"
+                                   title="Solo números, espacios y el signo +"
+                                   placeholder="+56 9 1234 5678">
+                        </div>
+                        <div class="campo">
+                            <label for="condominium">Condominio / Departamento</label>
+                            <input type="text" id="condominium" name="condominium" maxlength="120"
+                                   placeholder="Ej: Condominio Los Alerces · Depto 302">
+                        </div>
+                    </div>
+
+                    <div class="contacto-grid2">
+                        <div class="campo">
+                            <label for="service_type">Servicio de interés *</label>
+                            <select id="service_type" name="service_type" required>
+                                <option value="general">General / No sé todavía</option>
+                                {% for service in services %}
+                                <option value="{{ service.slug }}">{{ service.name }}</option>
+                                {% endfor %}
+                                <option value="diagnostico_integral">Diagnóstico Integral</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label for="urgency">Urgencia</label>
+                            <select id="urgency" name="urgency">
+                                <option value="low">Baja - Puede esperar</option>
+                                <option value="medium" selected>Media - Atender pronto</option>
+                                <option value="high">Alta - Atención inmediata</option>
+                                <option value="critical">Crítica - Emergencia</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="address">Dirección</label>
+                        <input type="text" id="address" name="address" maxlength="200"
+                               autocomplete="street-address" placeholder="Calle, número, comuna">
+                    </div>
+
+                    <div class="campo">
+                        <label for="message">Mensaje *</label>
+                        <textarea id="message" name="message" rows="5" required maxlength="1000"
+                                  placeholder="Cuéntanos qué necesitas para tu condominio o departamento..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-hero-primary contacto-submit">
+                        <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                    </button>
+                    <p class="contacto-privacidad">
+                        <i class="fas fa-lock"></i> Respondemos en menos de 24 horas hábiles.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
